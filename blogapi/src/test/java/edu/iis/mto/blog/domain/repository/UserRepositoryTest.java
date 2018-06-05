@@ -16,6 +16,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import edu.iis.mto.blog.domain.model.AccountStatus;
 import edu.iis.mto.blog.domain.model.User;
 
+import javax.persistence.EntityManager;
+
 @RunWith(SpringRunner.class)
 @DataJpaTest
 public class UserRepositoryTest {
@@ -45,12 +47,10 @@ public class UserRepositoryTest {
 
     @Test
     public void shouldFindOneUsersIfRepositoryContainsOneUserEntity() {
-
-        User persistedUser = entityManager.persist(user);
+        User persistedUser = entityManager.find(User.class, 1L);
         List<User> users = repository.findAll();
-        System.out.println(users.get(0).getEmail());
         Assert.assertThat(users, Matchers.hasSize(1));
-        //Assert.assertThat(users.get(0).getEmail(), Matchers.equalTo(persistedUser.getEmail()));
+        Assert.assertThat(users.get(0).getEmail(), Matchers.equalTo(persistedUser.getEmail()));
     }
 
     @Test
