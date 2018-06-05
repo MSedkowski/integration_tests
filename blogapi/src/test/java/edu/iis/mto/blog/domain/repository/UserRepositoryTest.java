@@ -36,12 +36,10 @@ public class UserRepositoryTest {
         user.setAccountStatus(AccountStatus.NEW);
     }
 
-    @Ignore
     @Test
     public void shouldFindNoUsersIfRepositoryIsEmpty() {
-
+        repository.deleteAll();
         List<User> users = repository.findAll();
-
         Assert.assertThat(users, Matchers.hasSize(0));
     }
 
@@ -50,7 +48,7 @@ public class UserRepositoryTest {
     public void shouldFindOneUsersIfRepositoryContainsOneUserEntity() {
         User persistedUser = entityManager.persist(user);
         List<User> users = repository.findAll();
-
+        System.out.println(users.get(0).getEmail());
         Assert.assertThat(users, Matchers.hasSize(1));
         Assert.assertThat(users.get(0).getEmail(), Matchers.equalTo(persistedUser.getEmail()));
     }
