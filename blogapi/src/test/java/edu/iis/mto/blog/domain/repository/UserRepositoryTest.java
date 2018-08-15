@@ -24,17 +24,6 @@ public class UserRepositoryTest {
     @Autowired
     private UserRepository repository;
 
-    private User user;
-
-    @Before
-    public void setUp() {
-        user = new User();
-        user.setFirstName("Jan");
-        user.setLastName("Kowalski");
-        user.setEmail("jkowalski@domain.com");
-        user.setAccountStatus(AccountStatus.NEW);
-    }
-
     @Test
     public void shouldFindNoUsersIfRepositoryIsEmpty() {
         repository.deleteAll();
