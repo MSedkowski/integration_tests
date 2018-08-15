@@ -1,11 +1,10 @@
 package edu.iis.mto.blog.domain.repository;
 
-import java.util.List;
-
+import edu.iis.mto.blog.domain.model.AccountStatus;
+import edu.iis.mto.blog.domain.model.User;
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +12,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import edu.iis.mto.blog.domain.model.AccountStatus;
-import edu.iis.mto.blog.domain.model.User;
-
-import javax.persistence.EntityManager;
+import java.util.List;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -34,7 +30,8 @@ public class UserRepositoryTest {
     public void setUp() {
         user = new User();
         user.setFirstName("Jan");
-        user.setEmail("john@domain.com");
+        user.setLastName("Kowalski");
+        user.setEmail("jkowalski@domain.com");
         user.setAccountStatus(AccountStatus.NEW);
     }
 
@@ -64,5 +61,53 @@ public class UserRepositoryTest {
         Assert.assertThat(persistedUser.getId(), Matchers.notNullValue());
         repository.deleteAll();
     }
+
+    @Test
+    public void shouldFindUserByFirstName() {
+        Assert.assertThat(repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("john", " ", " ")
+                .size(), Matchers.equalTo(1));
+        Assert.assertThat(repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("John", " ", " ")
+                .size(), Matchers.equalTo(1));
+    }
+
+    @Test
+    public void shouldFindUserByLastName() {
+        Assert.assertThat(repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(" ", "steward", " ")
+                .size(), Matchers.equalTo(1));
+        Assert.assertThat(repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(" ", "Steward", " ")
+                .size(), Matchers.equalTo(1));
+    }
+
+    @Test
+    public void shouldFindUserByEmail() {
+        Assert.assertThat(repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(" ", " ", "john@domain.com")
+                .size(), Matchers.equalTo(1));
+    }
+
+    @Test
+    public void shouldFindUsersByFirstNameLastNameOrEmail() {
+        Assert.assertThat(repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("John", "Steward", "john@domain.com")
+                .size(), Matchers.equalTo(1));
+    }
+
+    @Test
+    public void shouldNotFindUserWhenParamsAreIncorrect() {
+        Assert.assertThat(repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(" ", "Nowak", " ")
+                .size(), Matchers.equalTo(0));
+        Assert.assertThat(repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase("Marian", " ", " ")
+                .size(), Matchers.equalTo(0));
+        Assert.assertThat(repository
+                .findByFirstNameContainingOrLastNameContainingOrEmailContainingAllIgnoreCase(" ", " ", "test@wp.pl")
+                .size(), Matchers.equalTo(0));
+    }
+
 
 }
