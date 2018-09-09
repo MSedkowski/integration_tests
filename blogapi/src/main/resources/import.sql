@@ -2,5 +2,6 @@
 insert into user (id, account_status, email, first_name, last_name) values (null, 'CONFIRMED', 'john@domain.com', 'John', 'Steward')
 insert into user (id, account_status, email, first_name) values (null, 'NEW', 'brian@domain.com', 'Brian')
 insert into user (id, account_status, email, first_name) values (null, 'CONFIRMED', 'tracy@domain.com', 'Tracy')
+insert into user (id, account_status, email, first_name) values (null, 'REMOVED', 'kelly@domain.com', 'Kelly')
 
 insert into blog_post values (null, 'Test', 1)
